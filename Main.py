@@ -113,5 +113,27 @@ async def warn(ctx, user: discord.Member, *, arg = None):
 	await client.send_message(user, "You have been warned for: {}".format(reason))
 	await client.send_message(user, "from: {} server".format(server))
 	
+@bot.command(pass_context=True)
+@commands.has_permissions(administrator=True)
+async def addrank(ctx, *, name = None):
+	author = ctx.message.author
+	server = ctx.message.server
+	role = discord.utils.get(ctx.message.server.roles, name=name)
+	await bot.create_role(server, name=name)
+	await bot.say("the role has been created :thumbs_up:")
+	
+@bot.command(pass_context=True)
+@commands.has_permissions(administrator=True)
+async def delrank(ctx, *, role_name):
+  role = discord.utils.get(ctx.message.server.roles, name=role_name)
+  if role:
+    try:
+      await bot.delete_role(ctx.message.server, role)
+      await bot.say("The role {} has been deleted!".format(role.name))
+    except discord.Forbidden:
+      await bot.say("Missing Permissions to delete this role!")
+  else:
+    await bot.say("The role doesn't exist!")
+	
 client.loop.create_task(change_status())
 client.run(os.environ['BOT_TOKEN'])
