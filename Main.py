@@ -134,6 +134,28 @@ async def delrank(ctx, *, role_name):
       await client.say("Missing Permissions to delete this role!")
   else:
     await client.say("The role doesn't exist!")
+
+@client.command(pass_context=True)
+@commands.has_permissions(administrator=True)
+async def addrole(ctx, user: discord.Member = None, *, name = None):
+    author = ctx.message.author
+    role = discord.utils.get(ctx.message.server.roles, name=name)
+    await client.add_roles(user, role)
+    text = await client.say(f'{author.mention} I have added the {role.name} role to a user {user.name}'.format(role.name))
+    await client.delete_message(ctx.message)
+    await asyncio.sleep(1)
+    await client.delete_message(text)
+
+@client.command(pass_context=True)
+@commands.has_permissions(administrator=True)
+async def removerole(ctx, user: discord.Member = None, *, name = None):
+    author = ctx.message.author
+    role = discord.utils.get(ctx.message.server.roles, name=name)
+    await client.remove_roles(user, role)
+    text = await bot.say(f'{author.mention} I have added the {role.name} role to a user {user.name}'.format(role.name))
+    await client.delete_message(ctx.message)
+    await asyncio.sleep(1)
+    await client.delete_message(text)
 	
 client.loop.create_task(change_status())
 client.run(os.environ['BOT_TOKEN'])
